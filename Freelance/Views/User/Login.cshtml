@@ -1,0 +1,73 @@
+﻿@model Freelance.Models.User
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Wall.cshtml";
+
+}
+
+<div class="title-of-page">
+    <h4> <i class="fas fa-user"></i> <strong>LOG IN</strong></h4>
+
+</div>
+
+@using (Html.BeginForm("Login", "User", method: FormMethod.Post, htmlAttributes: new { id = "login" }))
+{
+    if (Session["Username"] == null)
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button id="btn-reg-form" type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h2>You Are Already Loged in</h2>
+    }
+}
+
+@section Scripts{
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(() => {
+            $("#login").submit((e) => {
+                console.log($("#login").serialize());
+                e.preventDefault();
+               
+                    $.ajax({
+                        url: "/User/Login",
+                        type: "POST",
+                        data: $("#login").serialize(),
+                        success: (res) => {
+                            if (res.result === 1) {
+                                window.location.href = res.url;
+                            } else
+                                toastr.error(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+                        }
+                    });
+                
+            });
+        });
+    </script>
+}

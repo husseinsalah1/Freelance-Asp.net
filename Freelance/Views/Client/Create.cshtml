@@ -1,0 +1,112 @@
+﻿@using System.Web.UI.WebControls
+@model Freelance.VIewModels.PostJobType
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Factory.cshtml";
+   
+
+}
+@if (Session["Username"] == null)
+{
+    Response.Redirect("~/User/Login");
+
+}
+else if (Session["Role"].Equals("Client"))
+{
+
+    <div class="title-of-page">
+        <h4><i class="fas fa-edit"></i> <strong>UPDATE POST</strong></h4>
+    </div>
+
+    using (Html.BeginForm("Create", "Client", method: FormMethod.Post, htmlAttributes: new { id = "create" }))
+    {
+
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <input id="UserId" type="hidden" value=@Session["Id"] />
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Post.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Post.Description,
+                        new { @cols = "10", @rows = "5", @style = "width:100%;" })
+                    <br /> @Html.ValidationMessageFor(model => model.Post.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Post.JobBudget, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Post.JobBudget, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Post.JobBudget, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Post.JopTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Post.JopTypeId, new SelectList(Model.JopType, "Id", "Name"), "Select Type Jop", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Post.JopTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="sub" type="button" value="Create" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script src="~/Scripts/jquery.validate.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+        <script src="~/Scripts/bootbox.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("h3").slideDown(1200);
+                var x = $("#UserId").val();
+                console.log(x);
+                $("#sub").click(function (e) {
+                    var myData = $("#create").serialize() + "&Post.UserId=" + x;
+                    console.log(myData);
+                    if ($("#create").valid()) {
+                        $.ajax({
+                            url: "/Client/Create",
+                            type: "POST",
+                            data: myData,
+                            success: (res) => {
+                                if (res.result == 1) {
+                                    toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                    $('#create').each(function () {
+                                        this.reset();
+                                    });
+                                } else {
+                                    toastr.info(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+
+                                }
+
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    }
+}
+else
+{
+    <div class="title-of-page"><h3><i class="fas fa-user-lock"></i> <strong>SECURE PAGE</strong></h3></div>
+}

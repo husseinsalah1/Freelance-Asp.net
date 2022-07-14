@@ -1,0 +1,153 @@
+﻿@model IEnumerable<Freelance.Models.Post>
+
+@{
+    ViewBag.Title = "Jops";
+    Layout = "~/Views/Shared/_Wall.cshtml";
+
+}
+<div class="title-of-page">
+    <h4> <i class="fas fa-book-reader"></i> <strong>SHOW ALL JOBS</strong></h4>
+
+</div>
+
+
+
+@if (!Model.Any())
+{
+    <h2>There is no posts yet</h2>
+}
+else
+{
+
+
+    <table id="posts" class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 100px">Client Name</th>
+                <th style="width: 15px">No. of submited</th>
+                <th>Description</th>
+
+                <th style="width: 25px">Budget</th>
+                <th style="width: 25px">Type</th>
+
+                <th style="width: 120px">Date</th>
+                <th style="width: 200px">Process</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+                <tr>
+                    <td>@post.User.FName @post.User.LName</td>
+                    <td>@post.NumberOfPorpsalSubmitted</td>
+                    <td>@post.Description</td>
+                    <td>@post.JobBudget</td>
+                    <td>@post.JopType.Name</td>
+                    <td>@post.CreationDateTime</td>
+                    @if (Session["Username"] != null)
+                    {
+                <td>
+                    <button id="savebtn"  data-post-id="@post.Id" class="btn btn-primary js-save"><strong>SAVE</strong></button>
+                    <button id="submitbtn"  data-post-id="@post.Id" class="btn btn-success js-submit"><strong>SUBMIT</strong></button>
+                    <a style="background-color: #ed813e; border: #ed813e" href="/Freelancer/Rate/@post.Id" class="btn btn-default"><strong>RATE</strong></a>
+                </td>
+                    }
+                    else
+                    {
+                        <td style="color: brown">You Have To Login </td>
+
+                    }
+                <td>
+                    @{
+                        var total = 0;
+
+                        if (@post.NumberOfrates == 0)
+                        {
+                            total = (@post.rate) / (1);
+                        }
+                        else
+                        {
+                            total = (@post.rate) / (@post.NumberOfrates);
+                        }
+
+                    }
+                    @for (int i = 0; i < total; i++)
+                    {
+                        <span style="font-size: 20px; color:#ed813e	" class="glyphicon glyphicon-star"></span>
+                    }
+                    @for (int i = total; i < 5; i++)
+                    {
+                        <span style="font-size: 17px;" class="glyphicon glyphicon-star-empty"></span>
+                    }
+                </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input id="UserId" type="hidden" value=@Session["Id"] />
+}
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            var x = $("#UserId").val();
+
+            var table = $("#posts").DataTable();
+            $("#posts").on("click",
+                ".js-save",
+                function () {
+                    var button = $(this);
+                    myData = "PostId=" + button.attr("data-post-id") + "&UserId=" + x;
+                    console.log(myData);
+                    $.ajax({
+                        url: "/Freelancer/SavePost",
+                        type: "POST",
+                        data: myData,
+                        success: function (res) {
+
+                            if (res.result == 1) {
+                                toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                $('#create').each(function () {
+                                    this.reset();
+                                });
+                            } else if(res.result == 0){
+                                toastr.info(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+                            }
+                           
+                        }
+
+                    });
+                });
+
+
+            $("#posts").on("click",
+                ".js-submit",
+                function () {
+                    var button = $(this);
+                    myData = "PostId=" + button.attr("data-post-id") + "&UserId=" + x;
+                    console.log(myData);
+                    $.ajax({
+                        url: "/Freelancer/SubmitPost",
+                        type: "POST",
+                        data: myData,
+                        success: function (res) {
+                            if (res.result == 1) {
+                                toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                $('#create').each(function () {
+                                    this.reset();
+                                });
+                            } else if(res.result == 0){
+                                toastr.info(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+                            }
+                           
+                        }
+
+                    });
+                });
+        });
+
+    </script>
+}
+

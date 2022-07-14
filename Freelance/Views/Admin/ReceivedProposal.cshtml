@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Freelance.Models.PostSubmitted>
+@{
+    ViewBag.Title = "Received Proposal";
+    Layout = "~/Views/Shared/_DashBoard.cshtml";
+
+}
+@if (Session["Username"] == null)
+{
+    Response.Redirect("~/User/Login");
+
+}
+else if (Session["Role"].Equals("Admin"))
+{
+
+    <div class="title-of-page">
+        <h4> <i class="fas fa-paper-plane"></i> <strong>Received Proposal</strong></h4>
+    </div>
+    if (!Model.Any())
+    {
+        <div>
+            <h3>There is no users submitted</h3>
+        </div>
+    }
+    else
+    {
+        <div style="display: none" class="alert alert-success text-center" id="Success"><strong>Successfully..</strong></div>
+        <table id="posts" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 25px">Freelancer Name</th>
+                    <th style="width: 25px">Freelancer Email</th>
+                    <th>Description</th>
+                    <th style="width: 25px">Budget</th>
+                    <th style="width: 140px">Date</th>
+                    <th style="width: 80px">Process</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var post in Model)
+                {
+                    <tr>
+                        <td>@post.User.FName @post.User.LName</td>
+                        <td>@post.User.Email</td>
+                        <td>@post.Post.Description</td>
+                        <td>@post.Post.JobBudget</td>
+                        <td>@post.Post.CreationDateTime</td>
+                        <td>
+                            <button PostId="@post.Post.Id" id="postid" hidden></button>
+                            <button UserId="@post.User.Id" id="userid" hidden></button>
+                            <button isAccepted="@post.isAccepted" id="status" hidden></button>
+
+                            <button style="padding: 0px 5px" data-post-id="@post.Id" class="btn btn-success js-accept"><i class="fas fa-check-square"></i></button>
+                            <button style="padding: 0px 5px" data-post-id="@post.PostId"  data-user-id="@post.UserId" class="btn btn-danger js-refuse"><i class="fas fa-window-close"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @section scripts
+{
+
+
+        <script>
+            $(document).ready(function () {
+
+                var table = $("#posts").DataTable();
+                
+               
+                $("#posts").on("click", ".js-refuse",
+                    function () {
+                        var userId = $(".js-refuse").attr("data-user-id");
+                        var postId = $(".js-refuse").attr("data-post-id");
+                        var button = $(this);
+                        var myData = "UserId=" + userId + "&PostId=" + postId;
+                        $.ajax({
+                                url: "/Admin/RefusedUser",
+                                type: "POST",
+                                data:myData,
+                                success: function (res) {
+                                    if (res.result == 1) {
+                                        toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                        table.rows(button.parents('tr')).remove().draw();
+
+                                    } else {
+                                        toastr.info(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+
+                                    }
+
+                                }
+
+                            });
+                    });
+
+
+               
+                $("#posts").on("click", ".js-accept",
+                    function () {
+                        var button = $(this);
+                        var myData = "PostSubmitted.Id="
+                            + button.attr("data-post-id") + "&PostSubmitted.UserId=" + $("#userid").attr("UserId") + "&PostSubmitted.PostId=" + $("#postid").attr("PostId");
+                        console.log(myData);
+                        $.ajax({
+                            url: "/Client/AcceptedUser",
+                            type: "POST",
+                            data: myData,
+                            success: (res) => {
+                                if (res.result == 1) {
+                                    toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                    table.rows(button.parents('tr')).remove().draw();
+                                } else {
+                                    toastr.info(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+
+                                }
+
+                            }
+                        });
+                    });
+
+
+            });
+
+        </script>
+    }
+}
+else
+{
+    <div class="title-of-page"><h3><i class="fas fa-user-lock"></i> <strong>SECURE PAGE</strong></h3></div>
+}

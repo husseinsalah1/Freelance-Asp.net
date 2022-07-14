@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Freelance.Models.PostSubmitted>
+
+@{
+    ViewBag.Title = "Submitted";
+    Layout = "~/Views/Shared/_Wall.cshtml";
+    if (Session["Username"] == null)
+    {
+
+        Response.Redirect("~/User/Login");
+
+    }
+}
+
+<br />
+<br />
+<h4 class="title-of-page"><i class="fas fa-paper-plane"></i> <strong>SUBMITTED JOBS</strong></h4>
+<br />
+<br />
+<br />
+
+<div class="alert alert-success" style="display: none;" id="success">
+
+    <strong>Successfully ... </strong>
+
+</div>
+
+<div class="alert alert-danger" style="display: none;" id="fail">
+
+    <strong>This operation already done ... </strong>
+
+</div>
+
+@if (!Model.Any())
+{
+    <h2>There is no posts yet</h2>
+}
+else
+{
+
+
+    <table id="posts" class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 100px">Client Name</th>
+                <th style="width: 15px">No. of submited</th>
+                <th>Description</th>
+
+                <th style="width: 25px">Budget</th>
+                <th style="width: 25px">Type</th>
+
+                <th style="width: 140px">Date</th>
+                <th style="width: 25px">Status</th>
+                <th style="width: 25px">Cancel</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+            <tr>
+                <td>@post.Post.User.FName @post.Post.User.LName</td>
+                <td>@post.Post.NumberOfPorpsalSubmitted</td>
+                <td>@post.Post.Description</td>
+                <td>@post.Post.JobBudget</td>
+                <td>@post.Post.JopType.Name</td>
+                <td>@post.Post.CreationDateTime</td>
+                @if (@post.isAccepted == false)
+                {
+                    <td class="text-center">
+                        <i class="fas fa-spinner fa-pulse" style="color:red; font-size: 25px;"></i>
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center">
+                        <i class="fas fa-check" style="color:forestgreen; font-size: 25px;"></i>
+                    </td>
+
+                }
+                <td>
+                    <button id="submitbtn"  data-post-id="@post.Post.Id" class="btn btn-success js-submit js-cancel"><strong>CANCEL</strong></button>
+
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+    <input id="UserId" type="hidden" value=@Session["Id"] />
+}
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            var table = $("#posts").DataTable();
+            var x = $("#UserId").val();
+
+            $("#posts").on("click",
+                ".js-cancel",
+                function () {
+                    var button = $(this);
+                    myData = "PostId=" + button.attr("data-post-id") + "&UserId=" + x;
+                    console.log(myData);
+                    $.ajax({
+                        url: "/Freelancer/CancelPostSubmitted",
+                        type: "POST",
+                        data: myData,
+                        success: function (res) {
+                            if (res.result == 1) {
+                                toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                table.rows(button.parents('tr')).remove().draw();
+
+                            } else if(res.result == 0){
+                                toastr.info(res.message, "Falid Alert", { timeOut: 2000, "closeButton": true });
+                            }
+                        }
+
+                    });
+                });
+           
+        });
+
+    </script>
+}

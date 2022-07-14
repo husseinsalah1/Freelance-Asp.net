@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="/Content/myStyle/client-style.css"/>
+    <link rel="stylesheet" href="/Content/myStyle/footer.css"/>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+   
+
+</head>
+<body style="padding-bottom: 0px">
+    <div class="navbar navbar-inverse  navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+
+                @Html.Partial("_LoginPartial")
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-body" style="position: relative;">
+
+        <div class="side-bar">
+            <div class="list-group">
+                <a href="/User/Edit/@Session["Id"]" class="list-group-item">
+
+                    <div class="item-side">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </div>
+                </a>
+                <a href="/Client/Create" class="list-group-item">
+
+                    <div class="item-side">
+                        <i class="fas fa-plus"> </i>
+                        <span>Create new post</span>
+                    </div>
+                </a>
+                <a href="/Client/Show/@Session["Id"]" class="list-group-item">
+
+                    <div class="item-side">
+                        <i class="fas fa-book-reader"></i>
+                        <span>My posts</span>
+                    </div>
+                </a>
+                <a href="/Client/ReceivedProposal/@Session["Id"]" class="list-group-item">
+
+                    <div class="item-side">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Received proposals</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div style="display: inline-block; position: absolute; width: 80%; right: 0px;" class="content">
+
+            <div class="container-fluid myRender" style=" min-height: calc(77vh - 60px)">
+                @RenderBody()
+            </div>
+
+
+            <div class="footer" style="width: 100%; right:0; position:absolute; margin-top: 50px;">
+
+                @Html.Partial("_Footer")
+            </div>
+        </div>
+
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

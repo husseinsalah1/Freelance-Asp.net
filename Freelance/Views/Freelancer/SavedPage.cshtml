@@ -1,0 +1,153 @@
+﻿
+@model List<Freelance.Models.SavePost>
+@{
+    ViewBag.Title = "View Jop";
+    Layout = "~/Views/Shared/_Wall.cshtml";
+    if (Session["Username"] == null)
+    {
+
+        Response.Redirect("~/User/Login");
+
+    }
+}
+
+
+<div class="title-of-page">
+    <h4> <i class="fas fa-save"></i> <strong>SAVED JOBS</strong></h4>
+</div>
+
+@if (!Model.Any())
+{
+    <h2>There is no posts yet</h2>
+}
+else
+{
+
+
+    <table id="posts" class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 100px">Client Name</th>
+                <th style="width: 15px">No. of submited</th>
+                <th>Description</th>
+
+                <th style="width: 25px">Budget</th>
+                <th style="width: 25px">Type</th>
+                <th style="width: 120px">Date</th>
+                <th style="width: 140px">Process</th>
+                <th>Rating</th>
+                <th>Cancel</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model)
+            {
+                <tr>
+                    <td>@post.Post.User.FName @post.Post.User.LName</td>
+                    <td>@post.Post.NumberOfPorpsalSubmitted</td>
+                    <td>@post.Post.Description</td>
+                    <td>@post.Post.JobBudget</td>
+                    <td>@post.Post.JopType.Name</td>
+                    <td>@post.Post.CreationDateTime</td>
+                    <td>
+                        <button id="submitbtn"  data-post-id="@post.Post.Id" class="btn btn-success js-submit"><strong>SUBMIT</strong></button>
+                        <a style="background-color: #ed813e; border: #ed813e" href="/Freelancer/Rate/@post.Post.Id" class="btn btn-default"><strong>RATE</strong></a>
+                    </td>
+                    <td>
+                        @{
+                            var total = 0;
+
+                            if (@post.Post.NumberOfrates == 0)
+                            {
+                                total = (@post.Post.rate) / (1);
+                            }
+                            else
+                            {
+                                total = (@post.Post.rate) / (@post.Post.NumberOfrates);
+                            }
+
+                        }
+                        @for (int i = 0; i < total; i++)
+                        {
+                            <span style="font-size: 20px; color:#ed813e	" class="glyphicon glyphicon-star"></span>
+                        }
+                        @for (int i = total; i < 5; i++)
+                        {
+                            <span style="font-size: 17px;" class="glyphicon glyphicon-star-empty"></span>
+                        }
+                    </td>
+                    <td>
+                        <button   data-post-id="@post.Post.Id" class="btn btn-success js-cancel"><strong>CANCEL</strong></button>
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input id="UserId" type="hidden" value=@Session["Id"] />
+
+
+}
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            var table = $("#posts").DataTable();
+            var x = $("#UserId").val();
+            $("#posts").on("click",
+                ".js-submit",
+                function () {
+                    var button = $(this);
+                    myData = "PostId=" + button.attr("data-post-id") + "&UserId=" + x;
+                    console.log(myData);
+                    $.ajax({
+                        url: "/Freelancer/SubmitPost",
+                        type: "POST",
+                        data: myData,
+                        success: function (res) {
+                            if (res.result == 1) {
+                                toastr.success(res.message, "Success Alert", { timeOut: 2000, "closeButton": true });
+
+                             
+                            } else if(res.result == 0){
+                                toastr.info(res.message, "Falid Alert", { timeOut: 2000, "closeButton": true });
+                            }
+                        }
+
+                    });
+                });
+
+
+
+            var x = $("#UserId").val();
+
+            $("#posts").on("click",
+                ".js-cancel",
+                function () {
+                    var button = $(this);
+                    myData = "PostId=" + button.attr("data-post-id") + "&UserId=" + x;
+                    console.log(myData);
+                    $.ajax({
+                        url: "/Freelancer/CancelPostSaved",
+                        type: "POST",
+                        data: myData,
+                        success: function (res) {
+                            if (res.result == 1) {
+                                toastr.success(res.message, "Success Alert",  { timeOut: 2000 , "closeButton": true});
+                                table.rows(button.parents('tr')).remove().draw();
+
+                            } else if(res.result == 0){
+                                toastr.info(res.message, "This post already submitted", { timeOut: 2000, "closeButton": true });
+                            }
+                        }
+
+                    });
+                });
+        });
+    </script>
+}
+
+
+

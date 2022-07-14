@@ -1,0 +1,111 @@
+﻿html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
+.main-body .side-bar {
+    background: #333D46;
+    display: inline;
+    position: fixed;
+    width: 20%;
+    height: -webkit-fill-available;
+    padding-top: 20px;
+    z-index: 9999999;
+    top: 55px;
+}
+
+    .main-body .side-bar .list-group .list-group-item{
+        background: #333D46;
+        border: none;
+        color: white;
+        font-size: 15px;
+        margin: 10px 0px;
+        padding: 10px 10px
+    }
+
+    .main-body .side-bar .list-group .list-group-item {
+       
+        border-bottom: solid 0px #CCC;
+        transition: border-width 0.1s;
+
+    }
+
+        .main-body .side-bar .list-group .list-group-item:hover {
+            border-bottom-width: 1px;
+            opacity: 0.7
+}
+
+   
+
+    .main-body .side-bar .list-group .list-group-item:hover {
+        background: #1d3557;
+        color: white;
+    }
+
+.main-body .side-bar .list-group .list-group-item i {
+    color: white;
+
+    padding: 1px 5px;
+}
+
+
+.main-body .content .myRender #posts {
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px 0px #756d6d;
+}
+    .main-body .content .myRender #posts thead tr {
+        background-color: #f4f4f4;
+    }
+
+
+    .main-body .content .myRender #posts tbody tr {
+        background-color: #ffffff
+}
+
+.main-body #posts .btn {
+    padding: 3px 5px;
+    color: white;
+    margin-top: 5px
+}
+
+.main-body .title-of-page {
+    display: inline-block;
+    border: 1px gray solid;
+    margin: 30px 0px;
+    padding: 8px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px 0px #756d6d;
+}
+
+.main-body #posts #editbtn {
+    background-color: #81BB5F;
+    border: #81BB5F
+}
+
+.main-body #posts #deletebtn {
+    background-color: #d9534f;
+    border: #d9534f
+}
+
+
+
+.main-body .pagination > .active >
+a, .pagination > .active > span, .pagination >
+.active > a:hover, .pagination > .active >
+span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #EEE;
+}
+
+.main-body .pagination > .active >
+    a, .pagination > .active > span, .pagination >
+    .active > a:hover, .pagination > .active >
+    span:hover, .pagination > .active > a {
+        color: black;
+        border: 1px solid gray;
+        opacity: 0.7;
+    }
+

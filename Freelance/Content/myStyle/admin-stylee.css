@@ -1,0 +1,68 @@
+﻿html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
+.admin-pages #posts {
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px 0px #756d6d;
+}
+
+.admin-pages #posts thead tr {
+    background-color: #f4f4f4;
+}
+
+
+.admin-pages #posts tbody tr {
+    background-color: #ffffff
+}
+
+.admin-pages .title-of-page {
+    display: inline-block;
+    border: 1px gray solid;
+    margin: 30px 0px;
+    padding: 8px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px 0px #756d6d;
+}
+
+
+
+.admin-pages #posts .btn {
+    padding: 5px 8px;
+    color: white;
+    margin-left: 8px;
+}
+
+
+
+.admin-pages #posts .js-accept {
+    background-color: #81BB5F;
+    border: #81BB5F
+}
+
+.admin-pages #posts .js-delete {
+    background-color: #b13434;
+    border: #b13434
+}
+
+.admin-pages .pagination > .active >
+a, .pagination > .active > span, .pagination >
+.active > a:hover, .pagination > .active >
+span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #EEE;
+}
+
+
+.admin-pages .pagination > .active >
+    a, .pagination > .active > span, .pagination >
+    .active > a:hover, .pagination > .active >
+    span:hover, .pagination > .active > a {
+    color: black;
+    border: 1px solid gray;
+    opacity: 0.7;
+}

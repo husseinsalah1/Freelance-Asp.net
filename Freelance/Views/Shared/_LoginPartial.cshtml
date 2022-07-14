@@ -1,0 +1,23 @@
+﻿
+@if (Session["Username"] != null)
+{
+    using (Html.BeginForm("LogOut", "User", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Hello " + Session["Username"] + "!", "Edit", "User", routeValues: new {id = Session["Id"]}, htmlAttributes: new {title = "Manage"})
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+       
+        <li>@Html.ActionLink("Register", "Register", "User", routeValues: null, htmlAttributes: new {id = "registerLink"})</li>
+        <li>@Html.ActionLink("Log in", "Login", "User", routeValues: null, htmlAttributes: new {id = "loginLink"})</li>
+    </ul>
+}

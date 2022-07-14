@@ -1,0 +1,144 @@
+﻿@model Freelance.VIewModels.UserRoleViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Wall.cshtml";
+}
+
+
+<div class="title-of-page">
+    <h4> <i class="fas fa-user"></i> <strong>SIGN IN</strong></h4>
+</div>
+
+@using (Html.BeginForm("Register", "User", method: FormMethod.Post, htmlAttributes: new { id = "create", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.User.Id)
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+    <div class="form-group">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.Username)
+            @Html.EditorFor(model => model.User.Username, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User.Username, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.Email)
+            @Html.EditorFor(model => model.User.Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.FName)
+            @Html.EditorFor(model => model.User.FName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User.FName, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.LName)
+            @Html.EditorFor(model => model.User.LName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User.LName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="form-group">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.Password)
+            @Html.EditorFor(model => model.User.Password, new { htmlAttributes = new { @class = "form-control", id = "password1" } })
+            @Html.ValidationMessageFor(model => model.User.Password, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.ConfirmPassword)
+            @Html.EditorFor(model => model.User.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", id = "password2" } })
+            @Html.ValidationMessageFor(model => model.User.ConfirmPassword, "", new { @class = "text-danger", id = "match" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.PNumber)
+            @Html.EditorFor(model => model.User.PNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.User.PNumber, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.RoleId)
+            @Html.DropDownListFor(m => m.User.RoleId, new SelectList(Model.Roles, "Id", "Name"), "Select Role", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.User.RoleId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+
+
+    <div class="form-group">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.User.Image)
+            <input id="file" name="file" type="file" class="form-control" />
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-3">
+            <button class="btn btn-primary">Register Now</button>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            $("#create").submit(function (e) {
+
+                e.preventDefault();
+                var formData = new FormData(this);
+                console.log(formData);
+                if ($("#create").valid()) {
+                    $.ajax({
+                        url: "/User/Register",
+                        type: "POST",
+                        data: formData,
+                        success: (res) => {
+                            if (res.result === 1) {
+                                toastr.success(res.message, "Success Alert", { timeOut: 2000, "closeButton": true });
+                                $('#create').each(function () {
+                                    this.reset();
+                                });
+                            } else if (res.result == 0) {
+                                toastr.error(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+                            } else {
+                                toastr.error(res.message, "Failed Alert", { timeOut: 2000, "closeButton": true });
+
+                            }
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+}
